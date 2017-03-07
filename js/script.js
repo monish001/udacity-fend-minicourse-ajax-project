@@ -32,23 +32,24 @@ function loadData() {
         'api-key': "8ae608650f8b4e508d3abb94cb3ee105",
         'q': address
     });
-    $.getJSON(nytUrl, function(data){
+    $.getJSON(nytUrl)
+    .done(function(data) {
         // todo null checks
         var articles = data.response.docs;
-        articles.forEach(function(elem, index){
+        $nytHeaderElem.text(`New York Times articles for ${address}.`);
+        articles.forEach(function(elem, index) {
             var listItem = 
                 `<li class="article">
                     <a href=${elem.web_url}>
-                        <h1>${elem.headline.main || ''}</h1>
+                        ${elem.headline.main || ''}
                     </a>
-                    <p>${elem.lead_paragraph || ''}</p>
+                    <p>${elem.snippet || ''}</p>
                 </li>`;
-            $('#nytimes-articles').append(listItem);
+            $nytElem.append(listItem);
         });
-    }).done(function(result) {
-        console.log(result);
-    }).fail(function(err) {
-        throw err;
+    }).fail(function(error) {
+        console.error(error)
+        $nytHeaderElem.text(`New York Times articles could not be loaded.`);
     });
 
     return false;
