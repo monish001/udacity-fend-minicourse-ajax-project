@@ -25,6 +25,32 @@ function loadData() {
     $body.append('<img class="bgimg" src="' + streetViewUrl + '"/>');
 
     /**
+     * wikipedia data and rendering
+     */
+    var wikiUrl = `https://en.wikipedia.org/w/api.php?` +
+        `action=query&list=geosearch&gsradius=1000&gscoord=37.786971|-122.399677&format=json`
+    $.ajax(wikiUrl, {
+        dataType: `jsonp`
+    })
+    .done(function(response){
+        // todo null checks
+        var articleList = response.query.geosearch;
+        console.log(response);
+        articleList.forEach(function(elem, index){
+            var listItem = 
+                `<li class="article">
+                    <a href="http://en.wikipedia.org/wiki/${elem.title}">
+                        ${elem.title || ''}
+                    </a>
+                </li>`;
+            $wikiElem.append(listItem);
+        });
+    })
+    .fail(function(error){
+        console.error(error);
+    });
+
+    /**
      * NYTimes data and rendering
      */
     var nytUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
