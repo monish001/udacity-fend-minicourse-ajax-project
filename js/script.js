@@ -29,7 +29,10 @@ function loadData() {
     /**
      * wikipedia data and rendering
      */
-    var wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=${address}`
+    var handleWikiTimeOut = setTimeout(function(){
+        $wikiElem.append(`<li>Wikipedia links could not be loaded.</li>`);        
+    }, 8000);
+    var wikiUrl = `https://en.wikiasdfghjklsdfghjkpedia.org/w/api.php?action=query&list=search&format=json&srsearch=${address}`
     var wikiError = false;
     $.ajax(wikiUrl, {
         dataType: `jsonp`,
@@ -52,6 +55,7 @@ function loadData() {
                 </li>`;
             $wikiElem.append(listItem);
         });
+        clearTimeout(handleWikiTimeOut);
     })
     .fail(function(error){
         wikiError = true;
