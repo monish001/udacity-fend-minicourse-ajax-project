@@ -6,6 +6,8 @@ function loadData() {
     var $nytHeaderElem = $('#nytimes-header');
     var $nytElem = $('#nytimes-articles');
     var $greeting = $('#greeting');
+  
+   
 
     // clear out old data before new request
     $wikiElem.text("");
@@ -27,14 +29,19 @@ function loadData() {
     /**
      * wikipedia data and rendering
      */
-    var wikiUrl = `https://en.wikipedia.org/w/api.php?` +
-        `action=query&list=geosearch&gsradius=1000&gscoord=37.786971|-122.399677&format=json`
+    var wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=${address}`
+    var wikiError = false;
     $.ajax(wikiUrl, {
-        dataType: `jsonp`
+        dataType: `jsonp`,
+        success: function(){console.log('success');}
     })
     .done(function(response){
         // todo null checks
-        var articleList = response.query.geosearch;
+        if(!response || !(response.query) || !(response.query.search)){
+            wikiError = true;
+            return;
+        }
+        var articleList = response.query.search;
         console.log(response);
         articleList.forEach(function(elem, index){
             var listItem = 
@@ -47,7 +54,14 @@ function loadData() {
         });
     })
     .fail(function(error){
+        wikiError = true;
         console.error(error);
+    })
+    .always(function(){
+        if(wikiError){
+            wikiError = false;
+            $wikiElem.append(`<li>Wikipedia links could not be loaded.</li>`);
+        }
     });
 
     /**
