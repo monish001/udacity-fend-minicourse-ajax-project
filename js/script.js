@@ -67,6 +67,7 @@ function loadData() {
     /**
      * NYTimes data and rendering
      */
+    var nytError = false;
     var nytUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
     nytUrl += '?' + $.param({
         'api-key': "8ae608650f8b4e508d3abb94cb3ee105",
@@ -74,7 +75,10 @@ function loadData() {
     });
     $.getJSON(nytUrl)
     .done(function(data) {
-        // todo null checks
+        if(!data || !data.reponse || !data.response.docs){
+            nytError = true;
+            return;
+        }
         var articles = data.response.docs;
         $nytHeaderElem.text(`New York Times articles for ${address}.`);
         articles.forEach(function(elem, index) {
@@ -88,8 +92,13 @@ function loadData() {
             $nytElem.append(listItem);
         });
     }).fail(function(error) {
-        console.error(error)
-        $nytHeaderElem.text(`New York Times articles could not be loaded.`);
+        console.error(error);
+        nytError = true;    
+    }).always(function(){
+        if(nytError){
+            nytError = false;
+            $nytHeaderElem.text(`New York Times articles could not be loaded.`);
+        }
     });
 
     return false;
