@@ -32,11 +32,10 @@ function loadData() {
     var handleWikiTimeOut = setTimeout(function(){
         $wikiElem.append(`<li>Wikipedia links could not be loaded.</li>`);        
     }, 8000);
-    var wikiUrl = `https://en.wikiasdfghjklsdfghjkpedia.org/w/api.php?action=query&list=search&format=json&srsearch=${address}`
+    var wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=${address}`
     var wikiError = false;
     $.ajax(wikiUrl, {
-        dataType: `jsonp`,
-        success: function(){console.log('success');}
+        dataType: `jsonp`
     })
     .done(function(response){
         // todo null checks
@@ -45,7 +44,6 @@ function loadData() {
             return;
         }
         var articleList = response.query.search;
-        console.log(response);
         articleList.forEach(function(elem, index){
             var listItem = 
                 `<li class="article">
