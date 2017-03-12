@@ -77,7 +77,7 @@ function loadData() {
     });
     $.getJSON(nytUrl)
     .done(function(data) {
-        if(!data || !data.reponse || !data.response.docs){
+        if(!data || !data.response || !data.response.docs){
             nytError = true;
             return;
         }
